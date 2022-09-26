@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  master:
+    image: locustio/locust
+    ports:
+     - "8089:8089"
+    volumes:
+      - ./:/mnt/locust
+    command: -f /mnt/locust/locustfile.py --master -H http://localhost:5002
+  
+  worker:
+    image: locustio/locust
+    volumes:
+      - ./:/mnt/locust
+    ulimits:
+      nproc: 655350
+      nofile:
+        soft: 655350
+        hard: 655350
+    command: -f /mnt/locust/locustfile.py --worker --master-host master
